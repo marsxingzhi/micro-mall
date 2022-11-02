@@ -68,3 +68,23 @@ func TestGetSupportedCurrencies(t *testing.T) {
 		t.Errorf("expected:%v, got:%v", want, response.CurrencyCode) // 测试失败输出错误提示
 	}
 }
+
+func TestConvert(t *testing.T) {
+
+	service := handler.NewCurrencyService()
+
+	request := &pb.CurrencyConvertRequest{
+		From: &pb.Currency{
+			CurrencyCode: "USD",
+		},
+		ToCode: "CNY",
+	}
+	response, err := service.Convert(context.Background(), request)
+	if err != nil {
+		fmt.Println("测试失败: ", err)
+		return
+	}
+
+	fmt.Println("response = ", response)
+
+}

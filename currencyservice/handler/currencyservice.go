@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"io/ioutil"
+	"math"
 
 	"github.com/mars/currencyservice/pb"
 	"google.golang.org/grpc/codes"
@@ -25,7 +26,7 @@ func (service *CurrencyService) GetSupportedCurrencies(ctx context.Context, requ
 		return nil, status.Errorf(codes.Internal, "load supported currencies failed: %v\n", err)
 	}
 	// 1.1 反序列化json
-	currencyMap := make(map[string]float32)
+	currencyMap := make(map[string]float64)
 	if err = json.Unmarshal(data, &currencyMap); err != nil {
 		return nil, status.Errorf(codes.Internal, "parse supported currencies failed: %v\n", err)
 	}
@@ -42,6 +43,34 @@ func (service *CurrencyService) GetSupportedCurrencies(ctx context.Context, requ
 
 // 转换币种
 func (service *CurrencyService) Convert(ctx context.Context, request *pb.CurrencyConvertRequest) (*pb.Currency, error) {
-	// TODO()
-	return nil, nil
+
+	// 1. 获取当前的币种
+	data, err := ioutil.ReadFile("data/currency_conversion.json")
+	if err != nil {
+		return nil, status.Errorf(codes.Internal, "load supported currencies failed: %v\n", err)
+	}
+	currencyMap := make(map[string]float64)
+	if err = json.Unmarshal(data, &currencyMap); err != nil {
+		return nil, status.Errorf(codes.Internal, "parse supported currencies failed: %v\n", err)
+	}
+
+	fromCurrency, ok := currencyMap[request.From.CurrencyCode]
+	if !ok {
+		return nil, status.Errorf(codes.InvalidArgument, "not support currency: %v\n", request.Origin.CurrencyCode)
+	}
+	toCurrency, ok := currencyMap[request.ToCode]
+	if !ok {
+		return nil, status.Errorf(codes.InvalidArgument, "not support currency: %v\n", toCurrency)
+	}
+
+	result := &pb.Currency{
+		CurrencyCode: request.ToCode,
+	}
+
+	// 这个直接copy的
+	total := int64(math.Floor(float64(request.From.Units*10^9+int64(request.From.Nanos)) / fromCurrency * toCurrency))
+	result.Units = total / 1e9
+	result.Nanos = int32(total % 1e9)
+
+	return result, nil
 }
