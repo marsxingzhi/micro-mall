@@ -1,0 +1,14 @@
+go 1.18
+
+use (
+	./adservice
+	./cartservice
+	./categoryservice
+	./checkoutservice
+	./currencyservice
+	./diliverservice
+	./emailservice
+	./frontend
+	./paymentservice
+	./recommendservice
+)

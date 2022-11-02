@@ -1,0 +1,36 @@
+syntax = "proto3";
+package proto;
+option go_package = "github.com/mars/currencyservice/pb";
+
+// 当前货币描述
+message Currency {
+    // 货币code 例如：人民币、美元、欧元
+    string currency_code = 1;
+    // 货币单位
+    int32 units = 2;
+    // 数量的纳米单位
+    int32 nanos = 3;
+}
+
+message EmptyRequest {
+
+}
+
+// 货币转换请求消息
+message CurrencyConvertRequest {
+    Currency origin = 1;
+    string to_code = 2;
+}
+
+// 获得支持的币种的响应信息
+message GetSupportedCurrenciesResponse {
+    repeated string currency_code = 1;
+}
+
+// 货币服务接口
+service CurrencyService {
+    // 获取支持的币种
+    rpc GetSupportedCurrencies(EmptyRequest) returns (GetSupportedCurrenciesResponse){}
+    // 转换币种
+    rpc Convert(CurrencyConvertRequest) returns (Currency) {}
+}
