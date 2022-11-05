@@ -1,4 +1,4 @@
-package handler
+package service
 
 import (
 	"context"
@@ -12,6 +12,8 @@ import (
 )
 
 type CurrencyService struct {
+	// 必须实现
+	pb.UnimplementedCurrencyServiceServer
 }
 
 func NewCurrencyService() *CurrencyService {
@@ -56,7 +58,7 @@ func (service *CurrencyService) Convert(ctx context.Context, request *pb.Currenc
 
 	fromCurrency, ok := currencyMap[request.From.CurrencyCode]
 	if !ok {
-		return nil, status.Errorf(codes.InvalidArgument, "not support currency: %v\n", request.Origin.CurrencyCode)
+		return nil, status.Errorf(codes.InvalidArgument, "not support currency: %v\n", request.From.CurrencyCode)
 	}
 	toCurrency, ok := currencyMap[request.ToCode]
 	if !ok {

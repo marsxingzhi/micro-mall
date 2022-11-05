@@ -7,8 +7,8 @@ import (
 	"sort"
 	"testing"
 
-	"github.com/mars/currencyservice/handler"
 	"github.com/mars/currencyservice/pb"
+	"github.com/mars/currencyservice/service"
 )
 
 func TestGetSupportedCurrencies(t *testing.T) {
@@ -71,7 +71,7 @@ func TestGetSupportedCurrencies(t *testing.T) {
 
 func TestConvert(t *testing.T) {
 
-	service := handler.NewCurrencyService()
+	service := service.NewCurrencyService()
 
 	request := &pb.CurrencyConvertRequest{
 		From: &pb.Currency{
