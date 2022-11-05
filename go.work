@@ -6,9 +6,9 @@ use (
 	./categoryservice
 	./checkoutservice
 	./currencyservice
-	./diliverservice
 	./emailservice
 	./frontend
 	./paymentservice
+	./productCatalogService
 	./recommendservice
 )

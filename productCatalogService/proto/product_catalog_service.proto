@@ -1,0 +1,50 @@
+syntax = "proto3";
+package proto;
+option go_package = "github.com/mars/productCatalogService/pb";
+
+// 当前货币描述
+message Money {
+    // 货币code 例如：人民币、美元、欧元
+    string currency_code = 1;
+    // 货币单位，如果currency_code为USD，那么1个单位就是1美元
+    int64 units = 2;
+    // 数量的纳米单位
+    int32 nanos = 3;
+}
+
+message Empty {}
+
+// 商品
+message Product {
+    string id = 1;
+    string name = 2;
+    string description = 3;
+    string picture = 4;
+    Money price_usd = 5;
+    repeated string categories = 6;
+}
+
+message ListProductsResponse {
+    repeated Product products = 1;
+}
+
+message GetProductRequest {
+    string id = 1;
+}
+
+message SearchProductsRequest {
+    string query = 1;
+}
+
+message SearchProductsResponse {
+    repeated Product results = 1;
+}
+
+
+
+// 定义商品服务
+service ProductCatalogService {
+    rpc ListProducts(Empty) returns (ListProductsResponse) {}
+    rpc GetProduct(GetProductRequest) returns (Product) {}
+    rpc SearchProducts(SearchProductsRequest) returns (SearchProductsResponse) {}
+}
